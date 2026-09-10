@@ -1,0 +1,16 @@
+name: fmri
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas
+  - nibabel
+  - nilearn
+  - numpy
+  - jupyterlab
+  - matplotlib
+  - pybids
+  - ipykernel
+  - scikit-learn
+  - scipy
+prefix: /home/mathis/miniforge3/envs/fmri
