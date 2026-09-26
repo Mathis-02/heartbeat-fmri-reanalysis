@@ -1,2 +1,38 @@
+# Neuroimaging data
 data/
-results/
+sourcedata/
+derivatives/
+
+# Results are ignored by default
+results/*
+
+# Keep lightweight FreeSurfer outputs
+!results/freesurfer/
+!results/freesurfer/*.csv
+!results/freesurfer/*.png
+
+# Keep lightweight MVPA outputs
+!results/mvpa/
+results/mvpa/*
+!results/mvpa/mvpa_subject_results.csv
+!results/mvpa/mvpa_subject_accuracies.png
+!results/mvpa/mvpa_group_permutation.png
+
+# Editor settings
+.vscode/
+
+# FreeSurfer license
+license.txt
+**/license.txt
+
+# Python
+__pycache__/
+*.pyc
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local learning files
+scripts_inventory.txt
+toy_image.nii.gz
