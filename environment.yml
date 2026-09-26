@@ -13,4 +13,6 @@ dependencies:
   - ipykernel
   - scikit-learn
   - scipy
+  - ants
+  - statsmodels
 prefix: /home/mathis/miniforge3/envs/fmri
