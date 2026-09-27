@@ -8,6 +8,8 @@ I started this project to learn the different steps of an fMRI analysis on real 
 
 The task contains alternating Heart and Sound blocks. Each run has 16 blocks (8 Heart and 8 Sound), with a duration of 20 seconds per block.
 
+The dataset is associated with Dobrushina et al. (2021), *Sensory integration in interoception: Interplay between top-down and bottom-up processing*, Cortex, 144, 185–197. https://doi.org/10.1016/j.cortex.2021.08.009
+
 The imaging data are not stored in this repository. The analysis was run locally from the original OpenNeuro dataset.
 
 I initially worked with 10 subjects. For the later ANTs/group-analysis branch I retained 9 subjects. `sub-09381` required a different EPI-to-T1 registration procedure during earlier QC, so I did not include it in the new branch rather than mixing registration procedures across subjects.
