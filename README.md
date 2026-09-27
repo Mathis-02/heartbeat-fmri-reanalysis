@@ -28,6 +28,14 @@ I initially used the FSL registration workflow throughout the pipeline. I later 
 
 The subject-level Heart minus Sound contrast maps were first transformed from native EPI space to T1 space and then from T1 to the MNI152 2 mm template.
 
+### Registration QC
+
+Example registration QC for `sub-09113`. The first image overlays the registered mean EPI on the subject's anatomical T1 image. The second overlays the ANTs-normalized T1 image on the MNI152 2 mm template.
+
+![EPI to T1 registration](results/registration/sub-09113_epi_to_t1_qc.png)
+
+![T1 to MNI registration](results/registration/sub-09113_t1_to_mni_qc.png)
+
 ## GLM
 
 The first-level model was fitted separately for each subject in native functional space. The main contrast used here is:
