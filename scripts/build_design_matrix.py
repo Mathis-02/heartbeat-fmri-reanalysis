@@ -20,7 +20,7 @@ def build_design_matrix(subject):
 
     bold_file = (
         derivatives / "func"
-        / f"{subject}_task-heart_desc-stcMC_space-MNI_bold.nii.gz"
+        / f"{subject}_task-heart_desc-stcMC_bold.nii.gz"
     )
 
     motion_file = (

@@ -140,155 +140,13 @@ def preprocess_functional(subject):
     print(f"Volumes expected: {info['n_volumes']}")
     print(f"TR: {info['tr']} s")
 
-
-
-def preprocess_spatial(subject):
-    import os
-    import nibabel as nib
-
-    info = inspect_subject(subject)
-
-    derivatives = Path("derivatives") / subject
-    func_dir = derivatives / "func"
-    reg_dir = derivatives / "reg"
-
-    bold = (
-        func_dir
-        / f"{subject}_task-heart_desc-stcMC_bold.nii.gz"
-    )
-    bold_mni = (
-        func_dir
-        / f"{subject}_task-heart_desc-stcMC_space-MNI_bold.nii.gz"
-    )
-
-    epi2t1 = reg_dir / f"{subject}_stcMC_epi2t1.mat"
-    t1_to_mni = (
-        reg_dir / "mni"
-        / f"{subject}_T1w_to_MNI_affine.mat"
-    )
-
-    fsl_dir = os.environ.get("FSLDIR")
-    if not fsl_dir:
-        raise RuntimeError("FSLDIR is not defined")
-
-    template = (
-        Path(fsl_dir)
-        / "data/standard/MNI152_T1_2mm.nii.gz"
-    )
-
-    if not bold.is_file():
-        raise FileNotFoundError(bold)
-
-    if not template.is_file():
-        raise FileNotFoundError(template)
-
-    # Register the functional and anatomical images if needed.
-    if not epi2t1.is_file() or not t1_to_mni.is_file():
-        run([
-            sys.executable,
-            "scripts/register_anatomy.py",
-            subject,
-        ])
-
-    if not epi2t1.is_file() or not t1_to_mni.is_file():
-        raise RuntimeError("Missing registration matrices")
-
-    # Branch 1: fieldmap-based distortion correction.
-    if info["fieldmap"] is not None:
-        warp = (
-            reg_dir
-            / f"{subject}_stcMC_epi2t1_warp.nii.gz"
-        )
-
-        if not warp.is_file():
-            run([
-                sys.executable,
-                "scripts/register_anatomy.py",
-                subject,
-            ])
-
-        if not warp.is_file():
-            raise FileNotFoundError(
-                f"Missing distortion-correction warp: {warp}"
-            )
-
-        if bold_mni.is_file():
-            print(f"Existing MNI BOLD (provenance to verify): {bold_mni}")
-        else:
-            run([
-                "applywarp",
-                f"--in={bold}",
-                f"--ref={template}",
-                f"--warp={warp}",
-                f"--postmat={t1_to_mni}",
-                f"--out={bold_mni}",
-                "--interp=spline",
-            ])
-
-    # Branch 2: affine registration without fieldmap.
-    else:
-        epi2mni = (
-            reg_dir
-            / f"{subject}_stcMC_epi2mni.mat"
-        )
-
-        if epi2mni.is_file():
-            print(f"Existing EPI-to-MNI matrix: {epi2mni}")
-        else:
-            run([
-                "convert_xfm",
-                "-omat", str(epi2mni),
-                "-concat", str(t1_to_mni), str(epi2t1),
-            ])
-
-        if bold_mni.is_file():
-            print(f"Existing MNI BOLD: {bold_mni}")
-        else:
-            run([
-                "applywarp",
-                f"--in={bold}",
-                f"--ref={template}",
-                f"--premat={epi2mni}",
-                f"--out={bold_mni}",
-                "--interp=spline",
-            ])
-
-    # Verify the output.
-    image = nib.load(bold_mni)
-
-    if image.ndim != 4:
-        raise RuntimeError(
-            f"Expected a 4D MNI BOLD image: {image.shape}"
-        )
-
-    if image.shape[3] != info["n_volumes"]:
-        raise RuntimeError(
-            f"Unexpected number of volumes: {image.shape}"
-        )
-
-    reference = nib.load(template)
-
-    if image.shape[:3] != reference.shape[:3]:
-        raise RuntimeError(
-            "MNI BOLD and template have different dimensions"
-        )
-
-    if not np.allclose(image.affine, reference.affine):
-        raise RuntimeError(
-            "MNI BOLD and template have different affines"
-        )
-
-    print(f"\nSpatial preprocessing complete: {subject}")
-    print(f"MNI BOLD shape: {image.shape}")
-
-
 def run_first_level_analysis(subject):
     derivatives = Path("derivatives") / subject
 
     qc_dir = derivatives / "qc"
     stats_dir = derivatives / "stats" / "stcMC"
 
-    mask_file = qc_dir / "glm_mask_final_subject_stcMC.nii.gz"
+    mask_file = qc_dir / "native" / "bold_brain_mask_stcMC.nii.gz"
     design_file = qc_dir / "design_matrix_stcMC.tsv"
 
     expected_stats = [
@@ -300,18 +158,18 @@ def run_first_level_analysis(subject):
         qc_dir / "stcMC" / "heart_minus_sound_fdr05.png",
     ]
 
-    # 1. Subject-specific GLM mask
+    # 1. Native functional mask
     if mask_file.is_file():
-        print(f"Existing GLM mask: {mask_file}")
+        print(f"Existing native functional mask: {mask_file}")
     else:
         run([
             sys.executable,
-            "scripts/build_glm_mask.py",
+            "scripts/build_native_masks.py",
             subject,
         ])
 
     if not mask_file.is_file():
-        raise RuntimeError("GLM mask was not created")
+        raise RuntimeError("Native functional mask was not created")
 
     # 2. First-level design matrix
     if design_file.is_file():
@@ -358,8 +216,8 @@ def build_qc_summary(subject):
         / "framewise_displacement.tsv"
     )
     mask_file = (
-        qc_dir
-        / "glm_mask_final_subject_stcMC.nii.gz"
+        qc_dir / "native"
+        / "bold_brain_mask_stcMC.nii.gz"
     )
     design_file = (
         qc_dir
@@ -530,7 +388,6 @@ def main():
     initialize_run_log(args.subject)
 
     preprocess_functional(args.subject)
-    preprocess_spatial(args.subject)
     run_first_level_analysis(args.subject)
     build_qc_summary(args.subject)
 

@@ -20,12 +20,12 @@ def fit_glm(subject):
 
     bold_file = (
         derivatives / "func"
-        / f"{subject}_task-heart_desc-stcMC_space-MNI_bold.nii.gz"
+        / f"{subject}_task-heart_desc-stcMC_bold.nii.gz"
     )
     design_file = derivatives / "qc" / "design_matrix_stcMC.tsv"
     glm_mask = (
-        derivatives / "qc"
-        / "glm_mask_final_subject_stcMC.nii.gz"
+        derivatives / "qc" / "native"
+        / "bold_brain_mask_stcMC.nii.gz"
     )
 
     stats_dir = derivatives / "stats" / "stcMC"

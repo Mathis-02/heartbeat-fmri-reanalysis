@@ -36,7 +36,9 @@ The first-level model was fitted separately for each subject in native functiona
 
 I then transformed the contrast estimates to MNI space and built a common analysis mask using voxels covered by all 9 subjects.
 
-At the group level, I ran a voxelwise one-sample test on the subject-level contrast estimates. There were 4,487 voxels with uncorrected `p < .05`, but none survived FDR correction at `q < .05`.
+At the group level, I ran a voxelwise one-sample test on the subject-level contrast estimates. There were 9,866 voxels with uncorrected `p < .05`, but none survived FDR correction at `q < .05`.
+
+As a motion-sensitivity analysis, I refitted the first-level models with one additional nuisance regressor for each volume with framewise displacement above 0.5 mm. Some individual contrast maps changed substantially, especially for subjects with more high-motion volumes. At the group level, this analysis gave 10,580 voxels with uncorrected `p < .05`, but again no voxel survived FDR correction at `q < .05`.
 
 Given the small sample and the absence of corrected effects, I treat this part as an exploratory group analysis.
 
@@ -56,7 +58,7 @@ For each subject I also evaluated the 256 possible permutations obtained by swap
 
 ![Group permutation distribution](results/mvpa/mvpa_group_permutation.png)
 
-There is an important limitation here: Heart and Sound alternate systematically within a single run. Condition is therefore partly confounded with temporal position. The pairwise cross-validation and constrained permutations reduce some sources of leakage, but they cannot remove this property of the experimental design. I therefore consider the MVPA exploratory.
+There is an important limitation here, Heart and Sound alternate systematically within a single run. Condition is therefore partly confounded with temporal position. The pairwise cross-validation and constrained permutations reduce some sources of leakage, but they cannot remove this property of the experimental design. I therefore consider the MVPA exploratory.
 
 ## FreeSurfer
 

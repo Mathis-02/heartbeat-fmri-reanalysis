@@ -14,7 +14,7 @@ SUBJECTS = [
     "sub-09607",
 ]
 
-ROOT = Path("sourcedata/ds003763")
+ROOT = Path("data/ds003763")
 
 
 def main():

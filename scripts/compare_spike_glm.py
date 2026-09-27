@@ -60,7 +60,8 @@ def main(subject):
     mask_path = (
         derivatives
         / "qc"
-        / "glm_mask_final_subject_stcMC.nii.gz"
+        / "native"
+        / "bold_brain_mask_stcMC.nii.gz"
     )
 
     mask = load(mask_path) > 0

@@ -3,8 +3,16 @@ from statsmodels.stats.multitest import fdrcorrection
 import nibabel as nib
 import numpy as np
 from scipy.stats import ttest_1samp
+import argparse
 
 
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--analysis",
+    choices=["main", "spike"],
+    default="main",
+)
+args = parser.parse_args()
 
 subjects = [
     "sub-09113", "sub-09210", "sub-09260", "sub-09261",
@@ -13,7 +21,12 @@ subjects = [
 ]
 
 mask_file = Path("derivatives/group/qc/ants/common_mask.nii.gz")
-out_dir = Path("derivatives/group/stats")
+if args.analysis == "main":
+    subject_stats_dir = "mni"
+    out_dir = Path("derivatives/group/stats")
+else:
+    subject_stats_dir = "stcMC_spikeFD05_mni"
+    out_dir = Path("derivatives/group/stats_spikeFD05")
 out_dir.mkdir(parents=True, exist_ok=True)
 
 mask_img = nib.load(mask_file)
@@ -26,7 +39,7 @@ for subject in subjects:
         Path("derivatives")
         / subject
         / "stats"
-        / "mni"
+        / subject_stats_dir
         / "heart_minus_sound_effect_space-MNI.nii.gz"
     )
 
