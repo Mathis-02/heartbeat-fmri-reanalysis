@@ -17,7 +17,7 @@ Prepares the fieldmap files used during EPI-to-T1 registration.
 Runs the FSL anatomical and EPI-to-T1 registration steps.
 
 `run_pipeline.py`
-Runs the main subject-level preprocessing and analysis workflow.
+Runs the main subject-level functional preprocessing, native-space first-level analysis and QC. Spatial normalization of the resulting contrast maps is performed separately.
 
 `run_batch.py`
 Runs the subject-level pipeline over several subjects.
@@ -64,6 +64,8 @@ Produces the MVPA summary figures.
 The remaining scripts were used during development to inspect intermediate results or test specific processing choices. These include motion and alignment checks, fieldmap/no-fieldmap comparisons, spike-regressor models, coverage comparisons and alternative EPI registration tests.
 
 They are kept in the repository because they document the QC steps and some of the decisions made while developing the final workflow.
+
+Historical diagnostic scripts that are no longer part of the final workflow are stored in `scripts/legacy_diagnostics/`.
 
 ## FreeSurfer
 

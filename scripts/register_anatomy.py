@@ -1,6 +1,7 @@
 from pathlib import Path
 import argparse
 import subprocess
+import sys
 
 from inspect_bids import inspect_subject
 
@@ -12,10 +13,6 @@ def run(command):
 
 def register_anatomy(subject):
     info = inspect_subject(subject)
-    derivatives = Path("derivatives") / subject
-
-
-
     derivatives = Path("derivatives") / subject
     anat_dir = derivatives / "anat"
     reg_dir = derivatives / "reg"
@@ -91,7 +88,7 @@ def register_anatomy(subject):
 
             if not fmap_rads.is_file() or not fmap_mag_brain.is_file():
                 run([
-                    "python",
+                    sys.executable,
                     "scripts/prepare_fieldmap.py",
                     subject,
                 ])

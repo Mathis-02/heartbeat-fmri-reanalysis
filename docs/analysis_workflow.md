@@ -64,6 +64,6 @@ For the final ANTs branch, subject-level contrast maps were transformed in two s
 
 I used the same approach for native functional masks, with nearest-neighbour interpolation for the masks.
 
-One subject (`sub-09381`) had required a specific EPI-to-T1 correction during the earlier FSL analysis. Rather than mixing this procedure with the registration used for the other subjects, I excluded this subject from the later ANTs/group-analysis branch. The original FSL analysis with 10 subjects was kept separately.
+One subject (`sub-09381`) had required a specific EPI-to-T1 correction during the earlier FSL analysis. Rather than mixing this procedure with the registration used for the other subjects, I excluded this subject from the later ANTs/group-analysis branch. The earlier preprocessing work included 10 subjects, whereas the final ANTs/group-analysis branch used 9 subjects.
 
 This left 9 subjects for the final ANTs branch.
